@@ -10,12 +10,45 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components';
+import {gql, useQuery} from '@apollo/client';
 
 import Card from '../components/Card';
 import Logo from '../components/Logo';
 import Course from '../components/Course';
 import Menu from '../components/Menu';
 import Avatar from '../components/Avatar';
+
+const CardsQuery = gql`
+  {
+    cardsCollection {
+      items {
+        title
+        subTitle
+        image {
+          title
+          description
+          contentType
+          fileName
+          size
+          url
+          width
+          height
+        }
+        caption
+        logo {
+          title
+          description
+          contentType
+          fileName
+          size
+          url
+          width
+          height
+        }
+      }
+    }
+  }
+`;
 
 const HomeScreen = ({navigation}) => {
   const [scale] = useState(new Animated.Value(1));
@@ -36,6 +69,39 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     toggleMenu();
   });
+
+  const ExchangeCards = () => {
+    const {loading, error, data} = useQuery(CardsQuery);
+
+    if (loading) {
+      return <Message>Loading...</Message>;
+    }
+    if (error) {
+      return <Message>Error :(</Message>;
+    }
+
+    return (
+      <CardsContainer>
+        {data.cardsCollection.items.map((card, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => {
+              navigation.push('Section', {
+                section: card,
+              });
+            }}>
+            <Card
+              title={card.title}
+              image={card.image}
+              logo={card.logo}
+              caption={card.caption}
+              subtitle={card.subTitle}
+            />
+          </TouchableOpacity>
+        ))}
+      </CardsContainer>
+    );
+  };
 
   const toggleMenu = () => {
     if (action === 'openMenu') {
@@ -106,23 +172,7 @@ const HomeScreen = ({navigation}) => {
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
-              {cards.map((card, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    navigation.push('Section', {
-                      section: card,
-                    });
-                  }}>
-                  <Card
-                    title={card.title}
-                    image={card.image}
-                    logo={card.logo}
-                    caption={card.caption}
-                    subtitle={card.subtitle}
-                  />
-                </TouchableOpacity>
-              ))}
+              <ExchangeCards />
             </ScrollView>
             <SubTitle>Popular Courses</SubTitle>
             {courses.map((course, index) => (
@@ -143,6 +193,8 @@ const HomeScreen = ({navigation}) => {
     </RootView>
   );
 };
+
+const Message = styled.Text``;
 
 const RootView = styled.View`
   background: #000;
@@ -181,6 +233,8 @@ const SubTitle = styled.Text`
   margin-top: 8px;
   text-transform: uppercase;
 `;
+
+const CardsContainer = styled.View``;
 
 export default HomeScreen;
 

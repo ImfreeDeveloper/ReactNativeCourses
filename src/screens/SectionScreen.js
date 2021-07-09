@@ -12,6 +12,10 @@ const SectionScreen = ({route, navigation}) => {
       <StatusBar hidden={true} />
       <Cover>
         <Image source={section.image} />
+        <Wrapper>
+          <Logo source={section.logo}/>
+          <SubTitle>{section.subtitle}</SubTitle>
+        </Wrapper>
         <Title>{section.title}</Title>
         <Caption>{section.caption}</Caption>
       </Cover>
@@ -86,4 +90,25 @@ const CloseView = styled.View`
     shadowRadius: 4,
     elevation: 8,
   }}
+`;
+
+const Wrapper = styled.View`
+  flex-direction: row;
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  align-items: center;
+`;
+
+const Logo = styled.Image`
+  width: 24px;
+  height: 24px;
+`;
+
+const SubTitle = styled.Text`
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 5px;
+  text-transform: uppercase;
 `;

@@ -4,6 +4,16 @@ import {Provider} from 'react-redux';
 
 import AppNavigator from './src/navigator/AppNavigator';
 
+import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'https://graphql.contentful.com/content/v1/spaces/exabstp6gzfn',
+  cache: new InMemoryCache(),
+  headers: {
+    Authorization: 'Bearer QgxmaYatX0Yz6ULOlBD2hE-y6uzeVghJasOZ83l4qgs',
+  },
+});
+
 const initialState = {
   action: 'closeMenu',
   name: '',
@@ -25,9 +35,11 @@ const reducer = (state = initialState, action) => {
 const store = createStore(reducer);
 
 const App = () => (
-  <Provider store={store}>
-    <AppNavigator />
-  </Provider>
+  <ApolloProvider client={client}>
+    <Provider store={store}>
+      <AppNavigator />
+    </Provider>
+  </ApolloProvider>
 );
 
 export default App;
