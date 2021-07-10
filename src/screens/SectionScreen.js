@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {TouchableOpacity, StatusBar} from 'react-native';
+import { WebView } from 'react-native-webview';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -13,7 +14,7 @@ const SectionScreen = ({route, navigation}) => {
       <Cover>
         <Image source={section.image} />
         <Wrapper>
-          <Logo source={section.logo}/>
+          <Logo source={section.logo} />
           <SubTitle>{section.subtitle}</SubTitle>
         </Wrapper>
         <Title>{section.title}</Title>
@@ -33,11 +34,23 @@ const SectionScreen = ({route, navigation}) => {
           />
         </CloseView>
       </TouchableOpacity>
+      <Content>
+        <WebView source={{html: htmlContent}} />
+      </Content>
     </Container>
   );
 };
 
 export default SectionScreen;
+
+const htmlContent = `
+  <h2>Title</h2>
+  <p>link <a href="#">Ссылка</a></p>
+`;
+
+const Content = styled.View`
+  height: 100%;
+`;
 
 const Container = styled.View`
   flex: 1;

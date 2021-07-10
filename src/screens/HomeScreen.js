@@ -50,6 +50,41 @@ const CardsQuery = gql`
   }
 `;
 
+const ExchangeCards = ({navigation}) => {
+  const {loading, error, data} = useQuery(CardsQuery);
+
+  if (loading) {
+    return <Message>Loading...</Message>;
+  }
+  if (error) {
+    return <Message>Error :(</Message>;
+  }
+
+  return (
+    <CardsContainer>
+      {data.cardsCollection.items.map((card, index) => {
+        return (
+          <TouchableOpacity
+            key={index}
+            onPress={() => {
+              navigation.push('Section', {
+                section: card,
+              });
+            }}>
+            <Card
+              title={card.title}
+              image={card.image}
+              logo={card.logo}
+              caption={card.caption}
+              subtitle={card.subTitle}
+            />
+          </TouchableOpacity>
+        )
+      })}
+    </CardsContainer>
+  );
+};
+
 const HomeScreen = ({navigation}) => {
   const [scale] = useState(new Animated.Value(1));
   const [opacity] = useState(new Animated.Value(1));
@@ -69,39 +104,6 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     toggleMenu();
   });
-
-  const ExchangeCards = () => {
-    const {loading, error, data} = useQuery(CardsQuery);
-
-    if (loading) {
-      return <Message>Loading...</Message>;
-    }
-    if (error) {
-      return <Message>Error :(</Message>;
-    }
-
-    return (
-      <CardsContainer>
-        {data.cardsCollection.items.map((card, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => {
-              navigation.push('Section', {
-                section: card,
-              });
-            }}>
-            <Card
-              title={card.title}
-              image={card.image}
-              logo={card.logo}
-              caption={card.caption}
-              subtitle={card.subTitle}
-            />
-          </TouchableOpacity>
-        ))}
-      </CardsContainer>
-    );
-  };
 
   const toggleMenu = () => {
     if (action === 'openMenu') {
@@ -172,7 +174,7 @@ const HomeScreen = ({navigation}) => {
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
-              <ExchangeCards />
+              <ExchangeCards navigation={navigation} />
             </ScrollView>
             <SubTitle>Popular Courses</SubTitle>
             {courses.map((course, index) => (
